@@ -30,8 +30,9 @@ namespace assignment_one.Models
 
         [Required]
         [ForeignKey("UserId")]
-        public string? UserId { get; set; }
+        public int? UserId { get; set; }
 
         public Auction() { }
+
     }
 }

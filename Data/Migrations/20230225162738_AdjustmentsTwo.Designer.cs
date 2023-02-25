@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using assignment_one.Data;
 
@@ -11,9 +12,10 @@ using assignment_one.Data;
 namespace assignment_one.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230225162738_AdjustmentsTwo")]
+    partial class AdjustmentsTwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,9 +56,9 @@ namespace assignment_one.Data.Migrations
                     b.Property<decimal>("StartingPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

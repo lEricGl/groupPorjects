@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using assignment_one.Data;
 using assignment_one.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace assignment_one.Controllers
 {
     public class AuctionsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public AuctionsController(ApplicationDbContext context)
+        public AuctionsController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Auctions
@@ -44,6 +46,7 @@ namespace assignment_one.Controllers
         }
 
         // GET: Auctions/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -52,12 +55,22 @@ namespace assignment_one.Controllers
         // POST: Auctions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageUrl,StartingPrice,StartDate,Category,Condition,UserId")] Auction auction)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageUrl,StartingPrice,StartDate,Category,Condition")] Auction auction)
         {
+
             if (ModelState.IsValid)
             {
+                // Get the current user's ID as a string
+                string userIdString = _userManager.GetUserId(User);
+
+                // Convert the user ID to an int
+                int userId = int.Parse(userIdString);
+
+                auction.UserId = userId;
+
                 _context.Add(auction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -66,6 +79,7 @@ namespace assignment_one.Controllers
         }
 
         // GET: Auctions/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Auction == null)
@@ -79,11 +93,18 @@ namespace assignment_one.Controllers
                 return NotFound();
             }
             return View(auction);
+
+            // Ensure that only the user who created the product can edit it
+            if (product.UserId != _userManager.GetUserId(User))
+            {
+                return Forbid();
+            }
         }
 
         // POST: Auctions/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageUrl,StartingPrice,StartDate,Category,Condition,UserId")] Auction auction)
@@ -97,6 +118,12 @@ namespace assignment_one.Controllers
             {
                 try
                 {
+                    // Ensure that only the user who created the product can edit it
+                    if (product.UserId != _userManager.GetUserId(User))
+                    {
+                        return Forbid();
+                    }
+
                     _context.Update(auction);
                     await _context.SaveChangesAsync();
                 }
@@ -114,43 +141,6 @@ namespace assignment_one.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(auction);
-        }
-
-        // GET: Auctions/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Auction == null)
-            {
-                return NotFound();
-            }
-
-            var auction = await _context.Auction
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (auction == null)
-            {
-                return NotFound();
-            }
-
-            return View(auction);
-        }
-
-        // POST: Auctions/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Auction == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Auction'  is null.");
-            }
-            var auction = await _context.Auction.FindAsync(id);
-            if (auction != null)
-            {
-                _context.Auction.Remove(auction);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool AuctionExists(int id)
