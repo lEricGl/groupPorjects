@@ -58,7 +58,6 @@ namespace assignment_one.Controllers
         {
             if (ModelState.IsValid)
             {
-                auction.Id = User.Identity.GetHashCode();
                 _context.Add(auction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
