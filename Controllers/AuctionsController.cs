@@ -95,7 +95,7 @@ namespace assignment_one.Controllers
             return View(auction);
 
             // Ensure that only the user who created the product can edit it
-            if (product.UserId != _userManager.GetUserId(User))
+            if (auction.UserId != int.Parse(_userManager.GetUserId(User)))
             {
                 return Forbid();
             }
@@ -119,7 +119,7 @@ namespace assignment_one.Controllers
                 try
                 {
                     // Ensure that only the user who created the product can edit it
-                    if (product.UserId != _userManager.GetUserId(User))
+                    if (auction.UserId != int.Parse(_userManager.GetUserId(User)))
                     {
                         return Forbid();
                     }
