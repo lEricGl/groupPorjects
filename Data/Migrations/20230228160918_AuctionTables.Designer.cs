@@ -12,8 +12,8 @@ using assignment_one.Data;
 namespace assignment_one.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230228140021_UserUpdate")]
-    partial class UserUpdate
+    [Migration("20230228160918_AuctionTables")]
+    partial class AuctionTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,9 @@ namespace assignment_one.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -57,7 +60,6 @@ namespace assignment_one.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

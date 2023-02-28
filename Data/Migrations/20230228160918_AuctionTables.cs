@@ -4,7 +4,7 @@
 
 namespace assignment_one.Data.Migrations
 {
-    public partial class UserUpdatesS : Migration
+    public partial class AuctionTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
