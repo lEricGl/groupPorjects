@@ -58,19 +58,17 @@ namespace assignment_one.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageUrl,StartingPrice,StartDate,Category,Condition")] Auction auction)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageUrl,StartingPrice,Category,Condition")] Auction auction)
         {
+
+            // Set the user id of the auction to the current user
+            auction.UserId = _userManager.GetUserId(User);
+
+            // Set the start date to the current date
+            auction.StartDate = DateTime.Now;
 
             if (ModelState.IsValid)
             {
-                // Get the current user's ID as a string
-                string userIdString = _userManager.GetUserId(User);
-
-                // Convert the user ID to an int
-                int userId = int.Parse(userIdString);
-
-                auction.UserId = userId;
-
                 _context.Add(auction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -93,12 +91,6 @@ namespace assignment_one.Controllers
                 return NotFound();
             }
             return View(auction);
-
-            // Ensure that only the user who created the product can edit it
-            if (auction.UserId != int.Parse(_userManager.GetUserId(User)))
-            {
-                return Forbid();
-            }
         }
 
         // POST: Auctions/Edit/5
@@ -109,43 +101,13 @@ namespace assignment_one.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageUrl,StartingPrice,StartDate,Category,Condition,UserId")] Auction auction)
         {
-            if (id != auction.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    // Ensure that only the user who created the product can edit it
-                    if (auction.UserId != int.Parse(_userManager.GetUserId(User)))
-                    {
-                        return Forbid();
-                    }
-
-                    _context.Update(auction);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AuctionExists(auction.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(auction);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(auction);
-        }
-
-        private bool AuctionExists(int id)
-        {
-          return _context.Auction.Any(e => e.Id == id);
         }
     }
 }
