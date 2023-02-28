@@ -1,0 +1,26 @@
+﻿@model assignment_one.Models.Auction
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h4>Search</h4>
+<hr />
+
+<form asp-action="Search">
+    <div class="form-group">
+        <label for="SearchAuction" class="control-label">Search Bar</label>
+        <input name="SearchAuction" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Search" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

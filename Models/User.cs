@@ -8,5 +8,7 @@ namespace assignment_one.Models
         public int Role { get; set; }
 
         public User() { }
+
+
     }
 }

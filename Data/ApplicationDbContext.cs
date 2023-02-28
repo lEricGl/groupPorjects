@@ -16,6 +16,7 @@ namespace assignment_one.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
         }
     }
 }

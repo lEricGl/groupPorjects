@@ -46,7 +46,7 @@ namespace assignment_one.Controllers
         }
 
         // GET: Auctions/Create
-        [Authorize]
+        [Authorize] 
         public IActionResult Create()
         {
             return View();
@@ -175,6 +175,25 @@ namespace assignment_one.Controllers
             return _context.Auction.Any(e => e.Id == id);
         }
 
+        // GET: Auctions/Search View
+        public IActionResult SearchView()
+        {
+            return View();
+        }
+
+        // GET: Auctions/Search
+        public async Task<IActionResult> Search(string SearchAuction)
+        {
+            var auctions = from a in _context.Auction
+                           select a;
+
+            if (!String.IsNullOrEmpty(SearchAuction))
+            {
+                auctions = auctions.Where(a => a.Name.Contains(SearchAuction));
+            }
+
+            return View(await auctions.ToListAsync());
+        }
 
     }
 }
