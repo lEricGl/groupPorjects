@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace assignment_one.Models
 {
@@ -17,6 +18,7 @@ namespace assignment_one.Models
         public string ImageUrl { get; set; }
 
         [Required]
+
         public decimal StartingPrice { get; set; }
 
         [Required]
@@ -33,6 +35,19 @@ namespace assignment_one.Models
         public string? UserId { get; set; }
 
         public Auction() { }
+
+        public Auction(int id, string name, string description, string imageUrl, decimal startingPrice, DateTime startDate, int category, int condition, string userId)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            ImageUrl = imageUrl;
+            StartingPrice = startingPrice;
+            StartDate = startDate;
+            Category = category;
+            Condition = condition;
+            UserId = userId;
+        }
 
     }
 }

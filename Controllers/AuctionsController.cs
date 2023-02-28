@@ -58,22 +58,14 @@ namespace assignment_one.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageUrl,StartingPrice,Category,Condition")] Auction auction)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageUrl,StartingPrice,StartDate,Category,Condition,UserId")] Auction auction)
         {
-
-            // Set the user id of the auction to the current user
             auction.UserId = _userManager.GetUserId(User);
-
-            // Set the start date to the current date
             auction.StartDate = DateTime.Now;
+            _context.Auction.Add(auction);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
 
-            if (ModelState.IsValid)
-            {
-                _context.Add(auction);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(auction);
         }
 
         // GET: Auctions/Edit/5
