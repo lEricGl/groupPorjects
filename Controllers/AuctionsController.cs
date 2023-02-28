@@ -27,7 +27,7 @@ namespace assignment_one.Controllers
               return View(await _context.Auction.ToListAsync());
         }
 
-        // GET: Auctions/Details/5
+        // GET: Auctions/Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Auction == null)
@@ -53,12 +53,10 @@ namespace assignment_one.Controllers
         }
 
         // POST: Auctions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,ImageUrl,StartingPrice,Category,Condition")] Auction auction)
+        public async Task<IActionResult> Create([Bind("Name,Description,ImageUrl,StartingPrice,EndDate,Category,Condition")] Auction auction)
         {
             // Set the user id
             auction.UserId = _userManager.GetUserId(User);
@@ -94,12 +92,10 @@ namespace assignment_one.Controllers
         }
 
         // POST: Auctions/Edit
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageUrl,StartingPrice,Category,Condition")] Auction auction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageUrl,StartingPrice,EndDate,Category,Condition")] Auction auction)
         {
             if (id != auction.Id)
             {
@@ -133,7 +129,19 @@ namespace assignment_one.Controllers
             return View(auction);
         }
 
-        // GET: Auctions/Delete/5
+        // POST: Auctions/Delete
+        [Authorize]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var auction = await _context.Auction.FindAsync(id);
+            _context.Auction.Remove(auction);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Auctions/Delete
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -152,6 +160,7 @@ namespace assignment_one.Controllers
             return View(auction);
         }
 
+        // GET: Auctions/MyAuctions
         [Authorize]
         public async Task<IActionResult> MyAuctions()
         {
@@ -165,6 +174,7 @@ namespace assignment_one.Controllers
         {
             return _context.Auction.Any(e => e.Id == id);
         }
+
 
     }
 }
