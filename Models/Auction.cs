@@ -18,7 +18,6 @@ namespace assignment_one.Models
         public string ImageUrl { get; set; }
 
         [Required]
-
         public decimal StartingPrice { get; set; }
 
         [Required]
@@ -30,15 +29,13 @@ namespace assignment_one.Models
         [Required]
         public int Condition { get; set; }
 
-        [Required]
         [ForeignKey("UserId")]
         public string? UserId { get; set; }
 
         public Auction() { }
 
-        public Auction(int id, string name, string description, string imageUrl, decimal startingPrice, DateTime startDate, int category, int condition, string userId)
+        public Auction(string name, string description, string imageUrl, decimal startingPrice, DateTime startDate, int category, int condition, string userId)
         {
-            Id = id;
             Name = name;
             Description = description;
             ImageUrl = imageUrl;
